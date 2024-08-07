@@ -45,8 +45,8 @@ class GearBlock(nn.Module):
         self.num_point = num_point
         self.A = A
         #network
-        self.attn = Gear(in_channels=self.in_channel, out_channels=self.out_channel, is_Embed=is_Embed, joint_format=joint_format, incidence=self.A, num_point=self.num_point)
-        self.tnn = SAT(in_c=self.in_channel, out_c=self.in_channel)
+        self.gear = Gear(in_channels=self.in_channel, out_channels=self.out_channel, is_Embed=is_Embed, joint_format=joint_format, incidence=self.A, num_point=self.num_point)
+        self.sat = SAT(in_c=self.in_channel, out_c=self.in_channel)
         self.residual = lambda x: x
         if in_channel != out_channel:
             self.residual_s = nn.Sequential(
@@ -61,8 +61,8 @@ class GearBlock(nn.Module):
             self.down = None
 
     def forward(self,x, part=None):
-        x = self.tnn(x) + self.residual(x)
-        y = self.attn(x, part) + self.residual_s(x)
+        x = self.sat(x) + self.residual(x)
+        y = self.gear(x, part) + self.residual_s(x)
         y = y + (x if(self.down is None) else self.down(x))
         return y
 
