@@ -1,6 +1,6 @@
 data_cfg:
   dataset_name: CASIA-B
-  dataset_root: ../autodl-tmp/CASIA-B_SimCC/
+  dataset_root: ../CASIA-B_SimCC/
   dataset_partition: ./datasets/CASIA-B/CASIA-B.json
   test_dataset_name: CASIA-B
   num_workers: 8
