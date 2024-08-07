@@ -75,8 +75,8 @@ class GearBasicBlock(nn.Module):
         self.num_point = num_point
         self.A = A
         #network
-        self.attn = Gear(in_channels=self.in_channel, out_channels=self.out_channel, incidence=self.A, is_Embed=is_Embed, joint_format=joint_format, num_point=self.num_point)
-        self.tnn = UnitConv2D(D_in=self.in_channel, D_out=self.in_channel)
+        self.gear = Gear(in_channels=self.in_channel, out_channels=self.out_channel, incidence=self.A, is_Embed=is_Embed, joint_format=joint_format, num_point=self.num_point)
+        self.tcn = UnitConv2D(D_in=self.in_channel, D_out=self.in_channel)
         self.residual = lambda x: x
         if in_channel != out_channel:
             self.residual_s = nn.Sequential(
@@ -92,8 +92,8 @@ class GearBasicBlock(nn.Module):
 
     def forward(self, x, part=None):
 
-        x = self.tnn(x) + self.residual(x)
-        y = self.attn(x, part) + self.residual_s(x)
+        x = self.tcn(x) + self.residual(x)
+        y = self.gear(x, part) + self.residual_s(x)
         y = y + (x if(self.down is None) else self.down(x))
         return y
 
