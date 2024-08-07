@@ -16,7 +16,7 @@ class TCN_ST(nn.Module):
         self.A = A
         #network
         self.st = STModule(in_channels=self.in_channel, out_channels=self.out_channel, incidence=self.A, num_point=self.num_point)
-        self.tnn = UnitConv2D(D_in=self.in_channel, D_out=self.in_channel, kernel_size=9, dropout=0)
+        self.tcn = UnitConv2D(D_in=self.in_channel, D_out=self.in_channel, kernel_size=9, dropout=0)
         self.residual = lambda x: x
         if in_channel != out_channel:
             self.residual_s = nn.Sequential(
@@ -31,7 +31,7 @@ class TCN_ST(nn.Module):
             self.down = None
 
     def forward(self,x):
-        x = self.tnn(x) + self.residual(x)
+        x = self.tcn(x) + self.residual(x)
         y = self.st(x) + self.residual_s(x)
         y = y + (x if(self.down is None) else self.down(x))
         return y
